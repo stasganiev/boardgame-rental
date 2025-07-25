@@ -20,3 +20,4 @@ Web platform connecting board game owners with people who want to rent and play 
 
 ## Author
 Stas Ganiev
+(c) 24.07.2025 - ?
