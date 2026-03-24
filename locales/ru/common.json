@@ -1,0 +1,110 @@
+{
+  "nav": {
+    "home": "Главная",
+    "search": "Найти игры",
+    "addGame": "Разместить игру",
+    "myBookings": "Мои брони",
+    "profile": "Профиль",
+    "admin": "Админ",
+    "login": "Войти",
+    "register": "Регистрация",
+    "logout": "Выйти"
+  },
+  "home": {
+    "hero": {
+      "title": "Арендуйте настольные игры рядом",
+      "subtitle": "Найдите владельцев игр в вашем городе. Больше игр — меньше затрат.",
+      "searchPlaceholder": "Поиск по названию игры или городу...",
+      "searchButton": "Найти игры"
+    },
+    "stats": {
+      "games": "Игр доступно",
+      "cities": "Городов",
+      "users": "Довольных игроков"
+    }
+  },
+  "search": {
+    "title": "Каталог игр",
+    "filters": {
+      "radius": "Радиус поиска",
+      "genre": "Жанр",
+      "players": "Игроки",
+      "age": "Мин. возраст",
+      "complexity": "Сложность"
+    },
+    "listView": "Список",
+    "mapView": "Карта",
+    "noResults": "Игры не найдены в этом районе. Попробуйте увеличить радиус поиска.",
+    "kmAway": "{{distance}} км"
+  },
+  "auth": {
+    "signIn": "Войти",
+    "signUp": "Регистрация",
+    "email": "Email",
+    "password": "Пароль",
+    "name": "Имя",
+    "forgotPassword": "Забыли пароль?",
+    "noAccount": "Нет аккаунта?",
+    "hasAccount": "Уже есть аккаунт?",
+    "confirmEmail": "Проверьте почту для подтверждения аккаунта.",
+    "emailVerification": "Подтверждение email"
+  },
+  "game": {
+    "players": "{{min}}–{{max}} игроков",
+    "duration": "{{duration}}",
+    "age": "{{age}}+",
+    "complexity": "Сложность",
+    "condition": {
+      "new": "Новая",
+      "excellent": "Отличная",
+      "good": "Хорошая",
+      "satisfactory": "Удовлетворительная"
+    },
+    "bookNow": "Забронировать",
+    "ownerContact": "Связаться с владельцем",
+    "available": "Доступна",
+    "booked": "Занята"
+  },
+  "booking": {
+    "startDate": "Дата начала",
+    "endDate": "Дата окончания",
+    "status": {
+      "pending": "Ожидание",
+      "confirmed": "Подтверждено",
+      "in_progress": "В процессе",
+      "completed": "Завершено",
+      "cancelled": "Отменено"
+    },
+    "confirm": "Подтвердить",
+    "cancel": "Отменить",
+    "myRentals": "Мои аренды",
+    "myListings": "Запросы на аренду"
+  },
+  "profile": {
+    "editProfile": "Редактировать профиль",
+    "rating": "Рейтинг",
+    "deals": "Сделок",
+    "contact": "Контакт",
+    "contactTypes": {
+      "phone": "Телефон",
+      "telegram": "Telegram",
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "other": "Другое"
+    },
+    "memberSince": "На платформе с {{date}}"
+  },
+  "common": {
+    "loading": "Загрузка...",
+    "error": "Что-то пошло не так",
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "back": "Назад",
+    "next": "Далее",
+    "submit": "Отправить",
+    "required": "Обязательно",
+    "optional": "Необязательно"
+  }
+}

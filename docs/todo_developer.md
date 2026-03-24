@@ -26,26 +26,26 @@
 
 > ⏳ **Требует:** Создания репозитория GitHub и проекта Supabase оркестратором
 
-- [ ] **Инициализация репозитория Next.js 14**
+- [x] **Инициализация репозитория Next.js 14**
   Создать проект командой `npx create-next-app@latest` с флагами: App Router, TypeScript, Tailwind CSS, ESLint. Структура папок: `/web`, `/mobile`, `/supabase`.
 
-- [ ] **Настройка Tailwind CSS, ESLint, Prettier**
+- [x] **Настройка Tailwind CSS, ESLint, Prettier**
   Настроить `.eslintrc.json` (правила для TypeScript + React), `.prettierrc` (tabWidth: 2, singleQuote: true, semi: false). Добавить `tailwind.config.ts` с путями к `/app` и `/components`.
 
-- [ ] **Настройка Supabase клиента**
+- [x] **Настройка Supabase клиента**
   ⏳ Требует: URL и anon key от оркестратора
   Создать `/lib/supabase/client.ts` (browser client) и `/lib/supabase/server.ts` (server client для Server Components). Использовать `@supabase/ssr`.
 
-- [ ] **Настройка i18n (next-i18next)**
+- [x] **Настройка i18n (next-i18next)**
   Установить `next-i18next`. Создать структуру `/locales/en/{common,auth,games,bookings}.json` и `/locales/ru/{common,auth,games,bookings}.json`. Настроить `next-i18next.config.js` с локалями `['en', 'ru']` и defaultLocale `'en'`. Настроить маршрутизацию `/[locale]/...` в App Router.
 
-- [ ] **Настройка Zustand store**
+- [x] **Настройка Zustand store**
   Создать `/store/authStore.ts` (пользователь, сессия), `/store/searchStore.ts` (фильтры поиска, координаты), `/store/uiStore.ts` (язык, тема). Использовать `persist` middleware для сохранения языка.
 
-- [ ] **Базовый layout и шапка**
+- [x] **Базовый layout и шапка**
   Создать `/app/[locale]/layout.tsx` с провайдерами (Supabase, Zustand, i18n). Компонент `Header` с: логотипом, навигацией, переключателем языка EN/RU, кнопками Login/Register (или аватаром если залогинен).
 
-- [ ] **Настройка переменных окружения**
+- [x] **Настройка переменных окружения**
   Создать `.env.example` со всеми необходимыми переменными: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `RESEND_API_KEY`, `NEXT_PUBLIC_APP_URL`. Добавить `.env.local` в `.gitignore`.
 
 ---
@@ -54,28 +54,28 @@
 
 > ⏳ **Требует:** Настройки Supabase Auth и Email provider оркестратором
 
-- [ ] **Supabase Auth интеграция — Sign Up**
+- [x] **Supabase Auth интеграция — Sign Up**
   Реализовать `supabase.auth.signUp({ email, password })` с передачей metadata (name, city, country, language). После регистрации — редирект на страницу "Проверьте почту".
 
-- [ ] **Supabase Auth интеграция — Sign In / Sign Out**
+- [x] **Supabase Auth интеграция — Sign In / Sign Out**
   Реализовать `supabase.auth.signInWithPassword()` и `supabase.auth.signOut()`. Сохранять сессию через Supabase SSR cookies.
 
-- [ ] **Email подтверждение при регистрации**
+- [x] **Email подтверждение при регистрации**
   Настроить обработку callback-маршрута `/auth/confirm` (exchange code for session). Показывать статус верификации пользователю.
 
 - [ ] **2FA через email (OTP)**
   Реализовать flow: запрос OTP → `supabase.auth.signInWithOtp({ email })` → ввод кода → `supabase.auth.verifyOtp()`. Страница `/auth/verify-otp`.
 
-- [ ] **Восстановление пароля**
+- [x] **Восстановление пароля**
   Страница `/forgot-password`: вызов `supabase.auth.resetPasswordForEmail()`. Страница `/auth/reset-password`: обработка токена, вызов `supabase.auth.updateUser({ password })`.
 
-- [ ] **Страницы авторизации**
+- [x] **Страницы авторизации**
   Создать `/[locale]/register/page.tsx`, `/[locale]/login/page.tsx`, `/[locale]/forgot-password/page.tsx` с формами на React Hook Form + Zod валидацией. Все тексты через i18n (`auth.json`).
 
-- [ ] **Protected routes middleware**
+- [x] **Protected routes middleware**
   Создать `middleware.ts` в корне: проверять сессию Supabase для защищённых маршрутов (`/profile`, `/bookings`, `/admin`). Редиректить на `/login` если не авторизован.
 
-- [ ] **JWT refresh логика**
+- [x] **JWT refresh логика**
   Настроить автообновление сессии через Supabase SSR. Добавить `<SessionRefresher />` компонент в layout для client-side refresh.
 
 ---
@@ -93,16 +93,16 @@
 - [ ] **Автосоздание профиля при регистрации**
   Создать Database Function + Trigger: при `auth.users` INSERT → автоматически создавать запись в `public.users` с данными из metadata.
 
-- [ ] **CRUD профиля**
+- [x] **CRUD профиля**
   API-функции: `getProfile(userId)`, `updateProfile(data)`. Обновляемые поля: name, city, country, location, contact, language, notification_settings.
 
-- [ ] **Загрузка фото профиля**
+- [x] **Загрузка фото профиля**
   Компонент `AvatarUpload`: выбор файла → resize до 400x400 (canvas) → загрузка в `avatars/{userId}` → сохранение URL в профиль. Показывать прогресс загрузки.
 
-- [ ] **Страница профиля `/profile/[id]`**
+- [x] **Страница профиля `/profile/[id]`**
   Отображать: аватар, имя, рейтинг, количество сделок, город, список объявлений пользователя, отзывы. Контакт показывать только если `isPublic: true` или есть подтверждённая бронь.
 
-- [ ] **Редактирование своего профиля**
+- [x] **Редактирование своего профиля**
   Страница `/profile/edit` (только для авторизованного пользователя): форма с React Hook Form + Zod, загрузка аватара, выбор типа контакта, настройки уведомлений, выбор языка.
 
 ---

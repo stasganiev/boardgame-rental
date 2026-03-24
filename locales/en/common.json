@@ -1,0 +1,110 @@
+{
+  "nav": {
+    "home": "Home",
+    "search": "Browse Games",
+    "addGame": "List a Game",
+    "myBookings": "My Bookings",
+    "profile": "Profile",
+    "admin": "Admin",
+    "login": "Sign In",
+    "register": "Sign Up",
+    "logout": "Sign Out"
+  },
+  "home": {
+    "hero": {
+      "title": "Rent Board Games Near You",
+      "subtitle": "Connect with local game owners. Play more, spend less.",
+      "searchPlaceholder": "Search by game name or city...",
+      "searchButton": "Find Games"
+    },
+    "stats": {
+      "games": "Games Available",
+      "cities": "Cities",
+      "users": "Happy Players"
+    }
+  },
+  "search": {
+    "title": "Browse Games",
+    "filters": {
+      "radius": "Search Radius",
+      "genre": "Genre",
+      "players": "Players",
+      "age": "Min Age",
+      "complexity": "Complexity"
+    },
+    "listView": "List",
+    "mapView": "Map",
+    "noResults": "No games found in this area. Try expanding your search radius.",
+    "kmAway": "{{distance}} km away"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "confirmEmail": "Check your email to confirm your account.",
+    "emailVerification": "Email Verification"
+  },
+  "game": {
+    "players": "{{min}}–{{max}} players",
+    "duration": "{{duration}}",
+    "age": "Age {{age}}+",
+    "complexity": "Complexity",
+    "condition": {
+      "new": "New",
+      "excellent": "Excellent",
+      "good": "Good",
+      "satisfactory": "Satisfactory"
+    },
+    "bookNow": "Request Rental",
+    "ownerContact": "Contact Owner",
+    "available": "Available",
+    "booked": "Booked"
+  },
+  "booking": {
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "status": {
+      "pending": "Pending",
+      "confirmed": "Confirmed",
+      "in_progress": "In Progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "myRentals": "My Rentals",
+    "myListings": "Booking Requests"
+  },
+  "profile": {
+    "editProfile": "Edit Profile",
+    "rating": "Rating",
+    "deals": "Deals",
+    "contact": "Contact",
+    "contactTypes": {
+      "phone": "Phone",
+      "telegram": "Telegram",
+      "whatsapp": "WhatsApp",
+      "email": "Email",
+      "other": "Other"
+    },
+    "memberSince": "Member since {{date}}"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "required": "Required",
+    "optional": "Optional"
+  }
+}

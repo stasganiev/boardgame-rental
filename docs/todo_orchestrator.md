@@ -25,10 +25,10 @@
 
 ### GitHub
 
-- [ ] **Создать аккаунт GitHub** (если нет)
+- [x] **Создать аккаунт GitHub** (если нет)
   Перейти на [github.com/signup](https://github.com/signup). Зарегистрироваться по email.
 
-- [ ] **Создать приватный репозиторий `boardgame-rental`**
+- [x] **Создать приватный репозиторий `boardgame-rental`**
   1. На [github.com](https://github.com) нажать **New repository**
   2. Название: `boardgame-rental`
   3. Visibility: **Private**
@@ -40,10 +40,10 @@
 
 ### Supabase
 
-- [ ] **Создать аккаунт Supabase**
+- [x] **Создать аккаунт Supabase**
   Перейти на [supabase.com](https://supabase.com). Зарегистрироваться через GitHub (рекомендуется) или email.
 
-- [ ] **Создать новый проект**
+- [x] **Создать новый проект**
   1. Нажать **New Project**
   2. Выбрать организацию
   3. Название проекта: `boardgame-rental`
@@ -52,14 +52,14 @@
   6. Plan: **Free**
   7. Нажать **Create new project** (создание займёт ~2 минуты)
 
-- [ ] **Сохранить ключи проекта**
+- [x] **Сохранить ключи проекта**
   После создания перейти: **Settings → API**
   Скопировать и сохранить:
   - `Project URL` → это `NEXT_PUBLIC_SUPABASE_URL`
   - `anon public` key → это `NEXT_PUBLIC_SUPABASE_ANON_KEY`
   - `service_role secret` key → хранить в тайне, только для серверных задач
 
-- [ ] **Передать ключи разработчику**
+- [x] **Передать ключи разработчику**
   Создать файл `.env.local` (НЕ коммитить в Git!):
   ```
   NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
