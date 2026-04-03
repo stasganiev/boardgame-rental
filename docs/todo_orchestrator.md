@@ -71,7 +71,7 @@
 
 ### Vercel
 
-- [ ] **Создать аккаунт Vercel**
+- [x] **Создать аккаунт Vercel**
   Перейти на [vercel.com](https://vercel.com). Зарегистрироваться через **GitHub** (обязательно — для автодеплоя).
 
 - [ ] **Подключить GitHub репозиторий**
@@ -88,17 +88,17 @@
 
 ### Resend
 
-- [ ] **Создать аккаунт Resend**
+- [x] **Создать аккаунт Resend**
   Перейти на [resend.com](https://resend.com). Зарегистрироваться по email.
 
-- [ ] **Получить API ключ**
+- [x] **Получить API ключ**
   1. Перейти в **API Keys → Create API Key**
   2. Название: `boardgame-rental-prod`
   3. Permission: **Full access** (или **Sending access**)
   4. Скопировать ключ (показывается только один раз!)
   5. Добавить в `.env.local`: `RESEND_API_KEY=re_xxxx`
 
-- [ ] **Передать RESEND_API_KEY разработчику**
+- [x] **Передать RESEND_API_KEY разработчику**
   Добавить в общий `.env.local` файл.
 
 🔓 **Разблокирует:** Phase 6 разработчика (email уведомления)
