@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { login } from '@/app/actions/auth'
+import { createClient } from '@/lib/supabase/client'
 
 export default function LoginPage({
   params: { locale },
@@ -40,14 +40,27 @@ export default function LoginPage({
     e.preventDefault()
     setIsPending(true)
     setError('')
+
     const fd = new FormData(e.currentTarget)
-    fd.set('locale', locale)
-    const result = await login(fd)
-    if (result?.error) {
-      setError(result.error)
+    const email = fd.get('email') as string
+    const password = fd.get('password') as string
+
+    const supabase = createClient()
+    const { error: authError } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (authError) {
+      if (authError.message.includes('Invalid login credentials')) {
+        setError(locale === 'ru' ? 'Неверный email или пароль' : 'Invalid email or password')
+      } else if (authError.message.includes('Email not confirmed')) {
+        setError(locale === 'ru' ? 'Подтвердите email перед входом' : 'Please confirm your email before signing in')
+      } else {
+        setError(authError.message)
+      }
       setIsPending(false)
+      return
     }
-    // On success: server action redirects
+
+    window.location.href = `/${locale}`
   }
 
   return (

@@ -13,12 +13,12 @@ export function useUser() {
     const supabase = createClient()
 
     // Get initial session
-    supabase.auth.getUser().then(async ({ data: { user: authUser } }) => {
-      if (authUser) {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
         const { data: profile } = await supabase
           .from('users')
           .select('*')
-          .eq('id', authUser.id)
+          .eq('id', session.user.id)
           .single()
 
         if (profile) {

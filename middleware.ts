@@ -1,5 +1,4 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { createServerClient } from '@supabase/ssr'
 
 const locales = ['en', 'ru']
 const defaultLocale = 'en'
@@ -48,30 +47,14 @@ export async function middleware(request: NextRequest) {
   const locale = pathname.split('/')[1]
   const pathWithoutLocale = '/' + pathname.split('/').slice(2).join('/')
 
-  // Supabase session
-  let response = NextResponse.next({ request })
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() { return request.cookies.getAll() },
-        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          response = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options)
-          )
-        },
-      },
-    }
+  // Check for Supabase auth cookie
+  const hasAuthCookie = request.cookies.getAll().some(
+    (c) => c.name.startsWith('sb-') && c.name.endsWith('-auth-token') && c.value.length > 0
   )
-
-  const { data: { user } } = await supabase.auth.getUser()
 
   // Redirect unauthenticated users away from protected routes
   const isProtected = protectedRoutes.some((route) => pathWithoutLocale.startsWith(route))
-  if (isProtected && !user) {
+  if (isProtected && !hasAuthCookie) {
     return NextResponse.redirect(
       new URL(`/${locale}/login?next=${encodeURIComponent(pathname)}`, request.url)
     )
@@ -79,11 +62,11 @@ export async function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from auth pages
   const isAuthRoute = authRoutes.some((route) => pathWithoutLocale.startsWith(route))
-  if (isAuthRoute && user) {
+  if (isAuthRoute && hasAuthCookie) {
     return NextResponse.redirect(new URL(`/${locale}`, request.url))
   }
 
-  return response
+  return NextResponse.next({ request })
 }
 
 export const config = {

@@ -1,10 +1,9 @@
 'use client'
 
 import { useState, useRef } from 'react'
-import { useRouter } from 'next/navigation'
 import { Avatar } from '@/components/ui/Avatar'
-import { updateProfile, uploadAvatar } from '@/app/actions/profile'
 import { useAuthStore } from '@/store/authStore'
+import { createClient } from '@/lib/supabase/client'
 
 interface Props {
   profile: any
@@ -14,7 +13,6 @@ interface Props {
 const contactTypes = ['phone', 'telegram', 'whatsapp', 'email', 'other'] as const
 
 export function EditProfileForm({ profile, locale }: Props) {
-  const router = useRouter()
   const { setUser, user } = useAuthStore()
   const [isPending, setIsPending] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
@@ -46,14 +44,28 @@ export function EditProfileForm({ profile, locale }: Props) {
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
+    if (file.size > 2 * 1024 * 1024) { setError('File too large (max 2MB)'); return }
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) { setError('Invalid file type'); return }
+
     setIsUploading(true)
-    const fd = new FormData()
-    fd.set('file', file)
-    const result = await uploadAvatar(fd)
-    if (result.url) {
-      setAvatarUrl(result.url)
-      if (user) setUser({ ...user, avatarUrl: result.url })
-    }
+    const supabase = createClient()
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    if (!authUser) { setIsUploading(false); return }
+
+    const ext = file.name.split('.').pop()
+    const path = `${authUser.id}/avatar.${ext}`
+
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(path, file, { upsert: true })
+
+    if (uploadError) { setError(uploadError.message); setIsUploading(false); return }
+
+    const { data } = supabase.storage.from('avatars').getPublicUrl(path)
+    await supabase.from('users').update({ avatar_url: data.publicUrl }).eq('id', authUser.id)
+
+    setAvatarUrl(data.publicUrl)
+    if (user) setUser({ ...user, avatarUrl: data.publicUrl })
     setIsUploading(false)
   }
 
@@ -62,13 +74,29 @@ export function EditProfileForm({ profile, locale }: Props) {
     setIsPending(true)
     setError('')
     setSuccess(false)
+
+    const supabase = createClient()
+    const { data: { user: authUser } } = await supabase.auth.getUser()
+    if (!authUser) { setError('Not authenticated'); setIsPending(false); return }
+
     const fd = new FormData(e.currentTarget)
-    const result = await updateProfile(fd)
-    if (result.error) setError(result.error)
-    else {
-      setSuccess(true)
-      router.refresh()
+    const updateData = {
+      name: fd.get('name') as string,
+      bio: (fd.get('bio') as string) || null,
+      location_city: (fd.get('location_city') as string) || null,
+      location_country: (fd.get('location_country') as string) || null,
+      contact_type: (fd.get('contact_type') as string) || null,
+      contact_value: (fd.get('contact_value') as string) || null,
+      contact_is_public: fd.get('contact_is_public') === 'true',
     }
+
+    const { error: updateError } = await supabase
+      .from('users')
+      .update(updateData)
+      .eq('id', authUser.id)
+
+    if (updateError) { setError(updateError.message) }
+    else { setSuccess(true) }
     setIsPending(false)
   }
 

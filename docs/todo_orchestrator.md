@@ -74,7 +74,7 @@
 - [x] **Создать аккаунт Vercel**
   Перейти на [vercel.com](https://vercel.com). Зарегистрироваться через **GitHub** (обязательно — для автодеплоя).
 
-- [ ] **Подключить GitHub репозиторий**
+- [x] **Подключить GitHub репозиторий**
   1. На дашборде Vercel: **Add New → Project**
   2. Выбрать репозиторий `boardgame-rental`
   3. Framework Preset: **Next.js** (определится автоматически)
@@ -110,21 +110,21 @@
 > Зависит от: Phase 0 (Supabase проект создан)
 > 🔓 **Разблокирует:** Тестирование Phase 1 разработчика
 
-- [ ] **Включить Email provider**
+- [x] **Включить Email provider**
   Supabase Dashboard → **Authentication → Providers → Email**
   Проверить что включено:
   - ✅ Enable Email provider
   - ✅ Confirm email (подтверждение email при регистрации)
   - ✅ Secure email change
 
-- [ ] **Настроить Email Templates**
+- [x] **Настроить Email Templates**
   Supabase Dashboard → **Authentication → Email Templates**
   Обновить шаблоны (разработчик предоставит HTML-шаблоны):
   - **Confirm signup** — письмо подтверждения регистрации
   - **Reset password** — восстановление пароля
   - **Magic Link** — для 2FA через email (OTP)
 
-- [ ] **Настроить Redirect URLs**
+- [x] **Настроить Redirect URLs**
   Supabase Dashboard → **Authentication → URL Configuration**
   - Site URL: `http://localhost:3000` (для разработки)
   - Redirect URLs добавить:
@@ -134,11 +134,11 @@
     ```
   - После получения домена добавить продакшн URL (см. Phase 5)
 
-- [ ] **Отключить лишние провайдеры**
+- [x] **Отключить лишние провайдеры**
   Supabase Dashboard → **Authentication → Providers**
   Убедиться что включён ТОЛЬКО **Email**. Отключить Google, GitHub, Facebook и другие (если были включены по умолчанию).
 
-- [ ] **Настроить JWT expiry (опционально)**
+- [x] **Настроить JWT expiry (опционально)**
   Supabase Dashboard → **Authentication → Settings → JWT Settings**
   JWT expiry: `3600` (1 час) — стандартное значение.
 

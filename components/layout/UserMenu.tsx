@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { useState } from 'react'
 import { useAuthStore } from '@/store/authStore'
-import { logout } from '@/app/actions/auth'
+import { createClient } from '@/lib/supabase/client'
 
 interface UserMenuProps {
   locale: string
@@ -63,7 +63,12 @@ export function UserMenu({ locale }: UserMenuProps) {
             )}
             <div className="border-t border-gray-100 mt-1 pt-1">
               <button
-                onClick={async () => { setMenuOpen(false); await logout(locale) }}
+                onClick={async () => {
+                  setMenuOpen(false)
+                  const supabase = createClient()
+                  await supabase.auth.signOut()
+                  window.location.href = `/${locale}`
+                }}
                 className="flex items-center gap-2 w-full px-4 py-2 text-sm text-red-500 hover:bg-red-50"
               >
                 🚪 {t.signOut}

@@ -101,7 +101,7 @@ export async function login(formData: FormData): Promise<AuthResult> {
   }
 
   revalidatePath('/', 'layout')
-  redirect(`/${locale}`)
+  return { success: true }
 }
 
 export async function logout(locale: string = 'en'): Promise<void> {
