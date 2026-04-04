@@ -1,64 +1,50 @@
 'use client'
 
 import { useEffect } from 'react'
+import { createBrowserClient } from '@supabase/ssr'
 import { createClient } from '@/lib/supabase/client'
 import { useAuthStore } from '@/store/authStore'
 import type { UserProfile } from '@/types'
 
-// Module-level promise to deduplicate concurrent getUser() calls
-let initPromise: Promise<void> | null = null
+function fetchProfile(userId: string): Promise<any> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+  return fetch(`${url}/rest/v1/users?id=eq.${userId}&select=*`, {
+    headers: {
+      'apikey': key,
+      'Authorization': `Bearer ${key}`,
+      'Accept': 'application/vnd.pgrst.object+json',
+    },
+  }).then((res) => (res.ok ? res.json() : null))
+}
 
 export function useUser() {
-  const { user, setUser, initialized, setInitialized, isLoading } = useAuthStore()
+  const { user, initialized, isLoading } = useAuthStore()
 
   useEffect(() => {
-    if (initialized) return
+    const store = useAuthStore.getState()
+    if (store.initialized) return
 
-    if (!initPromise) {
-      const supabase = createClient()
+    const supabase = createClient()
 
-      initPromise = supabase.auth
-        .getUser()
-        .then(async ({ data: { user: authUser } }) => {
-          if (authUser) {
-            const { data: profile } = await supabase
-              .from('users')
-              .select('*')
-              .eq('id', authUser.id)
-              .single()
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const s = useAuthStore.getState()
 
-            if (profile) {
-              setUser(mapProfile(profile))
-            } else {
-              setUser(null)
-            }
-          } else {
-            setUser(null)
-          }
-          setInitialized()
-        })
-        .catch(() => {
-          setUser(null)
-          setInitialized()
-          initPromise = null
-        })
+      if (session?.user) {
+        // Fetch profile via REST API to avoid singleton client lock
+        const profile = await fetchProfile(session.user.id)
+        if (profile) s.setUser(mapProfile(profile))
+        else s.setUser(null)
+      } else {
+        s.setUser(null)
+      }
 
-      // Listen to auth changes
-      supabase.auth.onAuthStateChange(async (_event, session) => {
-        if (session?.user) {
-          const { data: profile } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', session.user.id)
-            .single()
+      if (!s.initialized) s.setInitialized()
+    })
 
-          if (profile) setUser(mapProfile(profile))
-        } else {
-          setUser(null)
-        }
-      })
-    }
-  }, [initialized, setUser, setInitialized])
+    return () => subscription.unsubscribe()
+  }, [])
 
   return { user, isLoading: !initialized || isLoading }
 }

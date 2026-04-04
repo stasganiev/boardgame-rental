@@ -1,28 +1,36 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { EditProfileForm } from '@/components/profile/EditProfileForm'
-import { useUser } from '@/hooks/useUser'
+import { useAuthStore } from '@/store/authStore'
 
 export default function ProfilePage({ params: { locale } }: { params: { locale: string } }) {
-  const { user, isLoading: userLoading } = useUser()
+  const user = useAuthStore((s) => s.user)
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (userLoading) return
-    if (!user) { setLoading(false); return }
+    if (!user) return
 
-    const supabase = createClient()
-    supabase.from('users').select('*').eq('id', user.id).single()
-      .then(({ data }) => {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+    fetch(`${url}/rest/v1/users?id=eq.${user.id}&select=*`, {
+      headers: {
+        'apikey': key,
+        'Authorization': `Bearer ${key}`,
+        'Accept': 'application/vnd.pgrst.object+json',
+      },
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
         setProfile(data)
         setLoading(false)
-      }, () => setLoading(false))
-  }, [user, userLoading])
+      })
+      .catch(() => setLoading(false))
+  }, [user])
 
-  if (loading) {
+  if (!user || loading) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-10">
         <div className="animate-pulse space-y-4">

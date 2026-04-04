@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import { Avatar } from '@/components/ui/Avatar'
 import { useAuthStore } from '@/store/authStore'
-import { createClient } from '@/lib/supabase/client'
+import { getAccessToken } from '@/lib/supabase/token'
 
 interface Props {
   profile: any
@@ -11,6 +11,18 @@ interface Props {
 }
 
 const contactTypes = ['phone', 'telegram', 'whatsapp', 'email', 'other'] as const
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+function authHeaders() {
+  const token = getAccessToken()
+  return {
+    'apikey': supabaseKey,
+    'Authorization': `Bearer ${token || supabaseKey}`,
+    'Content-Type': 'application/json',
+  }
+}
 
 export function EditProfileForm({ profile, locale }: Props) {
   const { setUser, user } = useAuthStore()
@@ -43,29 +55,47 @@ export function EditProfileForm({ profile, locale }: Props) {
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
-    if (!file) return
+    if (!file || !user) return
     if (file.size > 2 * 1024 * 1024) { setError('File too large (max 2MB)'); return }
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) { setError('Invalid file type'); return }
 
     setIsUploading(true)
-    const supabase = createClient()
-    const { data: { user: authUser } } = await supabase.auth.getUser()
-    if (!authUser) { setIsUploading(false); return }
+    setError('')
 
-    const ext = file.name.split('.').pop()
-    const path = `${authUser.id}/avatar.${ext}`
+    try {
+      const token = getAccessToken()
+      const ext = file.name.split('.').pop()
+      const path = `${user.id}/avatar.${ext}`
 
-    const { error: uploadError } = await supabase.storage
-      .from('avatars')
-      .upload(path, file, { upsert: true })
+      const uploadRes = await fetch(`${supabaseUrl}/storage/v1/object/avatars/${path}`, {
+        method: 'POST',
+        headers: {
+          'apikey': supabaseKey,
+          'Authorization': `Bearer ${token || supabaseKey}`,
+        },
+        body: file,
+      })
 
-    if (uploadError) { setError(uploadError.message); setIsUploading(false); return }
+      if (!uploadRes.ok) {
+        const err = await uploadRes.json()
+        setError(err.message || 'Upload failed')
+        setIsUploading(false)
+        return
+      }
 
-    const { data } = supabase.storage.from('avatars').getPublicUrl(path)
-    await supabase.from('users').update({ avatar_url: data.publicUrl }).eq('id', authUser.id)
+      const publicUrl = `${supabaseUrl}/storage/v1/object/public/avatars/${path}`
 
-    setAvatarUrl(data.publicUrl)
-    if (user) setUser({ ...user, avatarUrl: data.publicUrl })
+      await fetch(`${supabaseUrl}/rest/v1/users?id=eq.${user.id}`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: JSON.stringify({ avatar_url: publicUrl }),
+      })
+
+      setAvatarUrl(publicUrl)
+      setUser({ ...user, avatarUrl: publicUrl })
+    } catch {
+      setError('Upload failed')
+    }
     setIsUploading(false)
   }
 
@@ -89,14 +119,22 @@ export function EditProfileForm({ profile, locale }: Props) {
       contact_is_public: fd.get('contact_is_public') === 'true',
     }
 
-    const supabase = createClient()
-    const { error: updateError } = await supabase
-      .from('users')
-      .update(updateData)
-      .eq('id', user.id)
+    try {
+      const res = await fetch(`${supabaseUrl}/rest/v1/users?id=eq.${user.id}`, {
+        method: 'PATCH',
+        headers: { ...authHeaders(), 'Prefer': 'return=minimal' },
+        body: JSON.stringify(updateData),
+      })
 
-    if (updateError) { setError(updateError.message) }
-    else { setSuccess(true) }
+      if (!res.ok) {
+        const err = await res.json().catch(() => null)
+        setError(err?.message || 'Update failed')
+      } else {
+        setSuccess(true)
+      }
+    } catch {
+      setError('Update failed')
+    }
     setIsPending(false)
   }
 
