@@ -47,9 +47,9 @@ export async function middleware(request: NextRequest) {
   const locale = pathname.split('/')[1]
   const pathWithoutLocale = '/' + pathname.split('/').slice(2).join('/')
 
-  // Check for Supabase auth cookie
+  // Check for Supabase auth cookie (supports both regular and chunked format from @supabase/ssr v0.10+)
   const hasAuthCookie = request.cookies.getAll().some(
-    (c) => c.name.startsWith('sb-') && c.name.endsWith('-auth-token') && c.value.length > 0
+    (c) => c.name.startsWith('sb-') && c.name.includes('-auth-token') && c.value.length > 0
   )
 
   // Redirect unauthenticated users away from protected routes

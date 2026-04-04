@@ -71,15 +71,14 @@ export function EditProfileForm({ profile, locale }: Props) {
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
+    const form = e.currentTarget
     setIsPending(true)
     setError('')
     setSuccess(false)
 
-    const supabase = createClient()
-    const { data: { user: authUser } } = await supabase.auth.getUser()
-    if (!authUser) { setError('Not authenticated'); setIsPending(false); return }
+    if (!user) { setError('Not authenticated'); setIsPending(false); return }
 
-    const fd = new FormData(e.currentTarget)
+    const fd = new FormData(form)
     const updateData = {
       name: fd.get('name') as string,
       bio: (fd.get('bio') as string) || null,
@@ -90,10 +89,11 @@ export function EditProfileForm({ profile, locale }: Props) {
       contact_is_public: fd.get('contact_is_public') === 'true',
     }
 
+    const supabase = createClient()
     const { error: updateError } = await supabase
       .from('users')
       .update(updateData)
-      .eq('id', authUser.id)
+      .eq('id', user.id)
 
     if (updateError) { setError(updateError.message) }
     else { setSuccess(true) }

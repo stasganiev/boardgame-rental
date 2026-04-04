@@ -1,54 +1,64 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuthStore } from '@/store/authStore'
 import type { UserProfile } from '@/types'
 
+// Module-level promise to deduplicate concurrent getUser() calls
+let initPromise: Promise<void> | null = null
+
 export function useUser() {
-  const { user, setUser, setLoading, isLoading } = useAuthStore()
-  const [initialized, setInitialized] = useState(false)
+  const { user, setUser, initialized, setInitialized, isLoading } = useAuthStore()
 
   useEffect(() => {
-    const supabase = createClient()
+    if (initialized) return
 
-    // Get initial session
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
+    if (!initPromise) {
+      const supabase = createClient()
 
-        if (profile) {
-          setUser(mapProfile(profile))
+      initPromise = supabase.auth
+        .getUser()
+        .then(async ({ data: { user: authUser } }) => {
+          if (authUser) {
+            const { data: profile } = await supabase
+              .from('users')
+              .select('*')
+              .eq('id', authUser.id)
+              .single()
+
+            if (profile) {
+              setUser(mapProfile(profile))
+            } else {
+              setUser(null)
+            }
+          } else {
+            setUser(null)
+          }
+          setInitialized()
+        })
+        .catch(() => {
+          setUser(null)
+          setInitialized()
+          initPromise = null
+        })
+
+      // Listen to auth changes
+      supabase.auth.onAuthStateChange(async (_event, session) => {
+        if (session?.user) {
+          const { data: profile } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', session.user.id)
+            .single()
+
+          if (profile) setUser(mapProfile(profile))
+        } else {
+          setUser(null)
         }
-      } else {
-        setUser(null)
-      }
-      setInitialized(true)
-    })
-
-    // Listen to auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session?.user) {
-        const { data: profile } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', session.user.id)
-          .single()
-
-        if (profile) setUser(mapProfile(profile))
-      } else {
-        setUser(null)
-      }
-    })
-
-    return () => subscription.unsubscribe()
-  }, [setUser, setLoading])
+      })
+    }
+  }, [initialized, setUser, setInitialized])
 
   return { user, isLoading: !initialized || isLoading }
 }

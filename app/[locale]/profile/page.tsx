@@ -3,23 +3,24 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { EditProfileForm } from '@/components/profile/EditProfileForm'
+import { useUser } from '@/hooks/useUser'
 
 export default function ProfilePage({ params: { locale } }: { params: { locale: string } }) {
+  const { user, isLoading: userLoading } = useUser()
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    if (userLoading) return
+    if (!user) { setLoading(false); return }
+
     const supabase = createClient()
-    supabase.auth.getSession().then(async ({ data: { session }, error: sessErr }) => {
-      console.log('[profile] session:', !!session, 'error:', sessErr)
-      if (session?.user) {
-        const { data, error: dbErr } = await supabase.from('users').select('*').eq('id', session.user.id).single()
-        console.log('[profile] db query:', { data: !!data, dbErr })
+    supabase.from('users').select('*').eq('id', user.id).single()
+      .then(({ data }) => {
         setProfile(data)
-      }
-      setLoading(false)
-    })
-  }, [])
+        setLoading(false)
+      }, () => setLoading(false))
+  }, [user, userLoading])
 
   if (loading) {
     return (
