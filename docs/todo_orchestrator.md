@@ -149,7 +149,7 @@
 > Зависит от: Применения миграций разработчиком
 > 🔓 **Разблокирует:** Тестирование Phase 2–4 разработчика
 
-- [ ] **Создать Storage bucket "avatars"**
+- [x] **Создать Storage bucket "avatars"**
   Supabase Dashboard → **Storage → New bucket**
   - Name: `avatars`
   - Public bucket: ✅ (включить)
@@ -157,7 +157,7 @@
   - Max file size: `5 MB`
   - Нажать **Create bucket**
 
-- [ ] **Создать Storage bucket "game-photos"**
+- [x] **Создать Storage bucket "game-photos"**
   Supabase Dashboard → **Storage → New bucket**
   - Name: `game-photos`
   - Public bucket: ✅ (включить)

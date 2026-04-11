@@ -44,6 +44,40 @@ export type Database = {
         }
         Update: Partial<Database['public']['Tables']['users']['Insert']>
       }
+      games: {
+        Row: {
+          id: string
+          name: string
+          min_players: number
+          max_players: number
+          min_age: number
+          game_duration: string
+          complexity: number
+          genre: string[]
+          weight: number | null
+          description: string
+          official_photos: string[]
+          created_by: string | null
+          moderation_status: 'pending' | 'approved' | 'rejected'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          name: string
+          min_players: number
+          max_players: number
+          min_age?: number
+          game_duration: string
+          complexity: number
+          genre?: string[]
+          weight?: number | null
+          description?: string
+          official_photos?: string[]
+          created_by?: string | null
+          moderation_status?: 'pending' | 'approved' | 'rejected'
+        }
+        Update: Partial<Database['public']['Tables']['games']['Insert']>
+      }
     }
   }
 }

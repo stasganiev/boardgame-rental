@@ -8,11 +8,13 @@ interface HeaderProps {
 
 const navItems = {
   en: [
+    { href: '/games', label: 'Game Catalog' },
     { href: '/search', label: 'Browse Games' },
     { href: '/listings/new', label: 'List a Game' },
     { href: '/bookings', label: 'My Bookings' },
   ],
   ru: [
+    { href: '/games', label: 'Каталог игр' },
     { href: '/search', label: 'Найти игры' },
     { href: '/listings/new', label: 'Разместить' },
     { href: '/bookings', label: 'Мои брони' },

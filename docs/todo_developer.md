@@ -84,13 +84,13 @@
 
 > ⏳ **Требует:** Создания bucket "avatars" в Supabase Storage оркестратором
 
-- [ ] **Миграция таблицы users**
+- [x] **Миграция таблицы users**
   Создать `/supabase/migrations/001_create_users.sql`: таблица `users` с полями из PRD (id UUID, email, name, avatar_url, country, city, location JSONB, contact JSONB, rating NUMERIC, deals_count INT, user_type, language, notification_settings JSONB, created_at). Добавить GIST индекс для геопоиска.
 
-- [ ] **RLS политики для таблицы users**
+- [x] **RLS политики для таблицы users**
   Политики: `SELECT` — все могут читать публичные профили; `UPDATE` — только владелец своего профиля (`auth.uid() = id`); `INSERT` — при регистрации (триггер).
 
-- [ ] **Автосоздание профиля при регистрации**
+- [x] **Автосоздание профиля при регистрации**
   Создать Database Function + Trigger: при `auth.users` INSERT → автоматически создавать запись в `public.users` с данными из metadata.
 
 - [x] **CRUD профиля**
@@ -111,22 +111,22 @@
 
 > ⏳ **Требует:** Создания bucket "game-photos" в Supabase Storage оркестратором
 
-- [ ] **Миграция таблицы games**
+- [x] **Миграция таблицы games**
   Создать `/supabase/migrations/002_create_games.sql`: таблица `games` с полями из PRD (id, name, min_players, max_players, min_age, game_duration, complexity 1-5, genre TEXT[], weight, description, official_photos TEXT[], created_by, moderation_status, created_at). Индексы на name, genre.
 
-- [ ] **RLS политики для games**
+- [x] **RLS политики для games**
   `SELECT` — все могут читать approved игры; неавторизованные пользователи тоже; `INSERT` — только авторизованные; `UPDATE` — только admin или создатель (для pending).
 
-- [ ] **Форма добавления новой игры**
+- [x] **Форма добавления новой игры**
   Страница `/games/new`: React Hook Form + Zod, поля согласно модели Game. Новые игры создаются со статусом `moderation_status: 'pending'`. Показывать пользователю статус модерации.
 
-- [ ] **Поиск дублей по названию**
+- [x] **Поиск дублей по названию**
   При вводе названия — debounced запрос `supabase.from('games').select().ilike('name', '%query%')`. Показывать список похожих игр с предложением "Использовать эту игру?".
 
-- [ ] **Загрузка официальных фото игры**
+- [x] **Загрузка официальных фото игры**
   Компонент `MultiImageUpload`: загрузка нескольких фото в `game-photos/official/{gameId}/`. Превью перед загрузкой, удаление отдельных фото.
 
-- [ ] **Страница `/games/[id]`**
+- [x] **Страница `/games/[id]`**
   Отображать: фотогалерея, все поля игры, список активных объявлений (GameInstance) с этой игрой на карте и в списке.
 
 ---
